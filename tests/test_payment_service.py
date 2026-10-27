@@ -24,13 +24,17 @@ class PaymentServiceTest(unittest.TestCase):
         )
 
     def test_authorized_payment_is_saved(self):
-        request = PaymentRequest("pay-1", "user-1", "acct-1", Decimal("12.50"))
+        request = PaymentRequest(
+            "pay-1", "user-1", "acct-1", Decimal("12.50"), "USD"
+        )
         record = self.service.process(request)
         self.assertEqual("AUTHORIZED", record.status)
         self.assertIsNotNone(self.repository.get("pay-1"))
 
     def test_unauthorized_payment_is_not_saved(self):
-        request = PaymentRequest("pay-2", "user-2", "acct-1", Decimal("12.50"))
+        request = PaymentRequest(
+            "pay-2", "user-2", "acct-1", Decimal("12.50"), "USD"
+        )
         with self.assertRaises(PermissionError):
             self.service.process(request)
         self.assertIsNone(self.repository.get("pay-2"))

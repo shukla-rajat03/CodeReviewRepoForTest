@@ -5,12 +5,15 @@ from dataclasses import dataclass
 class AuditEntry:
     action: str
     subject_id: str
+    actor_id: str
 
 
 class AuditLog:
     def __init__(self):
         self.entries: list[AuditEntry] = []
 
-    def write(self, action: str, subject_id: str) -> None:
-        self.entries.append(AuditEntry(action=action, subject_id=subject_id))
+    def write(self, action: str, subject_id: str, actor_id: str) -> None:
+        self.entries.append(
+            AuditEntry(action=action, subject_id=subject_id, actor_id=actor_id)
+        )
 
