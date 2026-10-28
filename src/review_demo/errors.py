@@ -5,3 +5,7 @@ class PaymentError(Exception):
 class ContractError(PaymentError):
     """Raised when a payment contract is incompatible."""
 
+
+class AuthorizationError(PaymentError):
+    """Raised when a payment actor lacks permission."""
+

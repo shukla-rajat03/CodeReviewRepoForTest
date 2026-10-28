@@ -33,20 +33,26 @@ class PaymentService:
             if existing is None:
                 raise RuntimeError("Processed payment record is missing")
             return existing
+
+        # BUG: idempotency and persistence happen before authorization.
+        self.idempotency.mark_processed(request.payment_id)
+        record = PaymentRecord(
+            payment_id=request.payment_id,
+            account_id=request.account_id,
+            amount=request.amount,
+            currency=request.currency,
+            status="PENDING",
+        )
+        self.repository.save(record)
+
         if not self.auth.can_pay(request.user_id, request.account_id):
             raise PermissionError("User cannot pay from this account")
         if not self.gateway.authorize(request):
             raise RuntimeError("Gateway authorization failed")
 
-        record = PaymentRecord(
-            payment_id=request.payment_id,
-            account_id=request.account_id,
-            amount=request.amount,
-            status="AUTHORIZED",
-        )
+        record.status = "AUTHORIZED"
         self.repository.save(record)
-        self.idempotency.mark_processed(request.payment_id)
         self.event_bus.publish(payment_completed(record))
-        self.audit.write("payment_authorized", request.payment_id)
+        self.audit.write("payment_authorized", request.payment_id, request.user_id)
         return record
 

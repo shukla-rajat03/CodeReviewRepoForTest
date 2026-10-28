@@ -10,9 +10,11 @@ from review_demo.repository import PaymentRepository
 class RefundServiceTest(unittest.TestCase):
     def test_rejects_refund_larger_than_payment(self):
         repository = PaymentRepository()
-        repository.save(PaymentRecord("pay-1", "acct-1", Decimal("10"), "AUTHORIZED"))
+        repository.save(
+            PaymentRecord("pay-1", "acct-1", Decimal("10"), "USD", "AUTHORIZED")
+        )
         service = RefundService(repository, AuditLog())
-        self.assertFalse(service.refund("pay-1", Decimal("11")))
+        self.assertFalse(service.refund("pay-1", Decimal("11"), "USD"))
 
 
 if __name__ == "__main__":

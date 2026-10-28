@@ -5,5 +5,6 @@ from decimal import Decimal
 @dataclass(frozen=True)
 class PaymentCompletedEvent:
     payment_id: str
-    amount: Decimal
+    total_amount: Decimal
+    currency: str
 

@@ -9,10 +9,15 @@ class RefundService:
         self.repository = repository
         self.audit = audit
 
-    def refund(self, payment_id: str, amount: Decimal) -> bool:
+    def refund(self, payment_id: str, amount: Decimal, currency: str) -> bool:
         record = self.repository.get(payment_id)
-        if record is None or amount <= 0 or amount > record.amount:
+        if (
+            record is None
+            or amount <= 0
+            or amount > record.amount
+            or currency != record.currency
+        ):
             return False
-        self.audit.write("payment_refunded", payment_id)
+        self.audit.write("payment_refunded", payment_id, "system")
         return True
 

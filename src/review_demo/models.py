@@ -8,6 +8,7 @@ class PaymentRequest:
     user_id: str
     account_id: str
     amount: Decimal
+    currency: str
 
 
 @dataclass
@@ -15,5 +16,6 @@ class PaymentRecord:
     payment_id: str
     account_id: str
     amount: Decimal
+    currency: str
     status: str
 

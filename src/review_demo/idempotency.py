@@ -8,3 +8,6 @@ class IdempotencyStore:
     def mark_processed(self, key: str) -> None:
         self._processed.add(key)
 
+    def clear(self, key: str) -> None:
+        self._processed.discard(key)
+

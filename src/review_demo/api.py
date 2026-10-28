@@ -9,11 +9,13 @@ class PaymentApi:
         self.service = service
 
     def create_payment(self, payload: dict[str, str]):
+        # BUG: user_id is trusted from caller-controlled payload rather than auth context.
         request = PaymentRequest(
             payment_id=payload["payment_id"],
             user_id=payload["user_id"],
             account_id=payload["account_id"],
             amount=Decimal(payload["amount"]),
+            currency=payload.get("currency", "USD"),
         )
         return self.service.process(request)
 

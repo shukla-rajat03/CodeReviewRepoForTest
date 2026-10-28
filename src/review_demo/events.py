@@ -5,6 +5,7 @@ from review_demo.models import PaymentRecord
 def payment_completed(record: PaymentRecord) -> PaymentCompletedEvent:
     return PaymentCompletedEvent(
         payment_id=record.payment_id,
-        amount=record.amount,
+        total_amount=record.amount,
+        currency=record.currency,
     )
 
